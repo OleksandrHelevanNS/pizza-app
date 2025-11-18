@@ -1,0 +1,42 @@
+services:
+  cassandra:
+    image: cassandra:4.1.10
+    container_name: cassandra
+    restart: unless-stopped
+    ports:
+      - "9042:9042"
+      - "7199:7199"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    networks:
+      - pizza-shop-network
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe cluster'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  menu-service:
+    build: ./menu-service
+    container_name: menu-service
+    ports:
+      - "${MENU_SERVICE_PORT}:${MENU_SERVICE_PORT}"
+    environment:
+      - SERVER_PORT=${MENU_SERVICE_PORT}
+      - CASSANDRA_HOST=cassandra
+      - CASSANDRA_PORT=9042
+      - CASSANDRA_DATACENTER=datacenter1
+      - CASSANDRA_KEYSPACE=menu
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - pizza-shop-network
+
+networks:
+  pizza-shop-network:
+    driver: bridge
+
+volumes:
+  cassandra_data:

@@ -1,0 +1,14 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  cassandra:
+    contact-points: ${CASSANDRA_HOST:cassandra}
+    port: ${CASSANDRA_PORT:9042}
+    local-datacenter: ${CASSANDRA_DATACENTER:datacenter1}
+    schema-action: none
+    keyspace-name: menu
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml

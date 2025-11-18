@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-pizzas-table
+      author: oleksandr
+      changes:
+        - cql: |
+            CREATE TABLE IF NOT EXISTS menu.pizzas (
+              id uuid PRIMARY KEY,
+              name text,
+              price decimal
+            );

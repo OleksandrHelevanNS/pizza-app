@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-keyspace
+      author: oleksandr
+      changes:
+        - cql: |
+            CREATE KEYSPACE IF NOT EXISTS menu
+            WITH replication = {
+              'class': 'NetworkTopologyStrategy',
+              'datacenter1': 1
+            };
