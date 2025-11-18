@@ -2,13 +2,18 @@ server:
   port: ${SERVER_PORT:8081}
 
 spring:
-  cassandra:
-    contact-points: ${CASSANDRA_HOST:cassandra}
-    port: ${CASSANDRA_PORT:9042}
-    local-datacenter: ${CASSANDRA_DATACENTER:datacenter1}
-    schema-action: none
-    keyspace-name: menu
+  application:
+    name: menu-service
 
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+  cassandra:
+    keyspace-name: menu
+    contact-points: cassandra:9042
+    local-datacenter: datacenter1
+    schema-action: create_if_not_exists
+
+logging:
+  level:
+    root: INFO
+    liquibase: DEBUG
+    liquibase.executor: DEBUG
+    com.ing.data.cassandra.jdbc: INFO

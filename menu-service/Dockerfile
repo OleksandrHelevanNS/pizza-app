@@ -1,23 +1,18 @@
-FROM eclipse-temurin:17-jdk AS builder
+FROM maven:3.9.9-eclipse-temurin-21-alpine AS builder
+
 WORKDIR /app
 
 COPY pom.xml .
-COPY src src
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:go-offline
 
-# Використовуємо Maven з базового образу для збірки
-RUN apt-get update && \
-    apt-get install -y maven && \
-    mvn clean package -DskipTests && \
-    mkdir -p target/extracted && \
-    java -Djarmode=layertools -jar target/*.jar extract --destination target/extracted
+COPY src ./src
 
-FROM eclipse-temurin:17-jre
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-
-# Копіюємо розпаковані шари з builder
-COPY --from=builder /app/target/extracted/dependencies/ ./
-COPY --from=builder /app/target/extracted/spring-boot-loader/ ./
-COPY --from=builder /app/target/extracted/snapshot-dependencies/ ./
-COPY --from=builder /app/target/extracted/application/ ./
-
-ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar"]

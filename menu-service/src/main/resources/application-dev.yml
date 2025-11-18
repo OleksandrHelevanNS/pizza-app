@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: menu-service
+
+  cassandra:
+    keyspace-name: menu # Вкажіть назву вашого keyspace
+    contact-points: localhost:9042
+    local-datacenter: datacenter1  # <--- ЦЕ ВИПРАВЛЯЄ ВАШУ ПОМИЛКУ
+    schema-action: create_if_not_exists # Створить таблиці автоматично, якщо треба (для dev)
+    request:
+      timeout: 10s
+    connection:
+      connect-timeout: 10s
+      init-query-timeout: 10s
+
+logging:
+  level:
+    root: INFO
+    liquibase: DEBUG
+    liquibase.executor: DEBUG
+    com.ing.data.cassandra.jdbc: INFO
