@@ -3,10 +3,10 @@ spring:
     name: menu-service
 
   cassandra:
-    keyspace-name: menu # Вкажіть назву вашого keyspace
+    keyspace-name: menu
     contact-points: localhost:9042
-    local-datacenter: datacenter1  # <--- ЦЕ ВИПРАВЛЯЄ ВАШУ ПОМИЛКУ
-    schema-action: create_if_not_exists # Створить таблиці автоматично, якщо треба (для dev)
+    local-datacenter: datacenter1
+    schema-action: create_if_not_exists
     request:
       timeout: 10s
     connection:

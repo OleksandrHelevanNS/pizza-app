@@ -10,10 +10,13 @@ spring:
     contact-points: cassandra:9042
     local-datacenter: datacenter1
     schema-action: create_if_not_exists
+    request:
+      timeout: 10s
+    connection:
+      connect-timeout: 10s
+      init-query-timeout: 10s
 
 logging:
   level:
     root: INFO
-    liquibase: DEBUG
-    liquibase.executor: DEBUG
     com.ing.data.cassandra.jdbc: INFO

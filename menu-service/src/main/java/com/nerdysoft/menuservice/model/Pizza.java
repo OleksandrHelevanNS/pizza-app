@@ -1,29 +1,38 @@
 package com.nerdysoft.menuservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.DecimalMax;
+import lombok.*;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+import java.util.Set;
 
-@Data
+@Table("pizzas")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
-@Table("pizzas")
 public class Pizza {
 
     @PrimaryKey
-    private UUID id;
-
-    @Column("name")
-    private String name;
+    private PizzaKey key;
 
     @Column("price")
     private BigDecimal price;
+
+    @Column("sizes")
+    private Set<Integer> sizes;
+
+    @Column("ingredients")
+    private Set<String> ingredients;
+
+    @Column("rating")
+    @DecimalMax("10")
+    private BigDecimal rating;
+
+    @Column("image")
+    private String image;
 }
