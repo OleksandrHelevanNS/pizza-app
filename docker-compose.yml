@@ -27,9 +27,21 @@ services:
       - CASSANDRA_PORT=${CASSANDRA_PORT}
       - CASSANDRA_DATACENTER=${CASSANDRA_DATACENTER}
       - CASSANDRA_KEYSPACE=${CASSANDRA_KEYSPACE}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
     depends_on:
       cassandra:
         condition: service_healthy
+    networks:
+      - pizza-shop-network
+
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "${DISCOVERY_SERVICE_PORT}:${DISCOVERY_SERVICE_PORT}"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=${DISCOVERY_SERVICE_PORT}
     networks:
       - pizza-shop-network
 
