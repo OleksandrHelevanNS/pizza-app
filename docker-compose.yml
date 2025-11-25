@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "${CASSANDRA_PORT}:${CASSANDRA_PORT}"
-      - "7199:7199"
+      - "${CASSANDRA_JMX_PORT}:${CASSANDRA_JMX_PORT}"
     volumes:
       - cassandra_data:/var/lib/cassandra
     networks:
@@ -25,8 +25,8 @@ services:
       - SERVER_PORT=${MENU_SERVICE_PORT}
       - CASSANDRA_HOST=${CASSANDRA_HOST}
       - CASSANDRA_PORT=${CASSANDRA_PORT}
-      - CASSANDRA_DATACENTER=datacenter1
-      - CASSANDRA_KEYSPACE=menu
+      - CASSANDRA_DATACENTER=${CASSANDRA_DATACENTER}
+      - CASSANDRA_KEYSPACE=${CASSANDRA_KEYSPACE}
     depends_on:
       cassandra:
         condition: service_healthy

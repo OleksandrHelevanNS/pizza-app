@@ -13,7 +13,7 @@ public class PizzaFactory {
     private final PizzaKeyFactory pizzaKeyFactory;
 
     public Pizza create(CreatePizzaRequest request) {
-        PizzaKey key = pizzaKeyFactory.create(request);
+        PizzaKey key = pizzaKeyFactory.create(request.getType(), request.getName());
 
         return Pizza.builder()
                 .key(key)
