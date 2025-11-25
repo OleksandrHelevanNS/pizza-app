@@ -1,14 +1,11 @@
-server:
-  port: ${SERVER_PORT:8081}
-
 spring:
   application:
     name: menu-service
 
   cassandra:
-    keyspace-name: ${CASSANDRA_KEYSPACE}
-    contact-points: ${CASSANDRA_HOST}
-    local-datacenter: ${CASSANDRA_DATACENTER}
+    keyspace-name: menu
+    contact-points: localhost:9042
+    local-datacenter: datacenter1
     schema-action: create_if_not_exists
     request:
       timeout: 10s
@@ -19,4 +16,6 @@ spring:
 logging:
   level:
     root: INFO
+    liquibase: DEBUG
+    liquibase.executor: DEBUG
     com.ing.data.cassandra.jdbc: INFO
