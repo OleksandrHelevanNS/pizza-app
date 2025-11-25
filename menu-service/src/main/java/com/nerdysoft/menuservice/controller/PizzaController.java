@@ -27,7 +27,7 @@ public class PizzaController {
                         .body(savedPizza));
     }
 
-    @GetMapping()
+    @GetMapping
     public Flux<PizzaResponse> getPizzas(@RequestParam PizzaType type) {
         return pizzaService.getAllByType(type);
     }
@@ -39,7 +39,7 @@ public class PizzaController {
                 .map(ResponseEntity::ok);
     }
 
-    @PutMapping()
+    @PutMapping
     public Mono<ResponseEntity<PizzaResponse>> updatePizza(
             @RequestParam PizzaType type,
             @RequestParam String name,
@@ -47,5 +47,14 @@ public class PizzaController {
     ) {
         return pizzaService.updatePizza(type, name, request)
                 .map(ResponseEntity::ok);
+    }
+
+    @DeleteMapping
+    public Mono<ResponseEntity<String>> deletePizza(
+            @RequestParam PizzaType type,
+            @RequestParam String name
+    ) {
+        return pizzaService.deletePizza(type, name)
+                .map(s -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(s));
     }
 }

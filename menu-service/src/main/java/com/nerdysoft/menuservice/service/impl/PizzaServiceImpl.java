@@ -3,6 +3,7 @@ package com.nerdysoft.menuservice.service.impl;
 import com.nerdysoft.menuservice.dto.CreatePizzaRequest;
 import com.nerdysoft.menuservice.dto.PizzaResponse;
 import com.nerdysoft.menuservice.dto.UpdatePizzaRequest;
+import com.nerdysoft.menuservice.exception.ItemAlreadyExistsException;
 import com.nerdysoft.menuservice.exception.ItemNotFoundException;
 import com.nerdysoft.menuservice.factory.PizzaFactory;
 import com.nerdysoft.menuservice.mapper.PizzaMapper;
@@ -10,6 +11,7 @@ import com.nerdysoft.menuservice.model.Pizza;
 import com.nerdysoft.menuservice.model.PizzaType;
 import com.nerdysoft.menuservice.repo.PizzaRepository;
 import com.nerdysoft.menuservice.service.PizzaService;
+import com.nerdysoft.menuservice.util.SuccessMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -26,9 +28,16 @@ public class PizzaServiceImpl implements PizzaService {
 
     @Override
     public Mono<PizzaResponse> createPizza(CreatePizzaRequest createPizzaRequest) {
-        Pizza pizza = pizzaFactory.create(createPizzaRequest);
-        return pizzaRepository.save(pizza)
-                .map(pizzaMapper::toDto);
+        return pizzaRepository
+                .existsByKeyTypeAndKeyName(createPizzaRequest.getType(), createPizzaRequest.getName())
+                .flatMap(exists -> {
+                    if (exists) {
+                        return Mono.error(new ItemAlreadyExistsException(ErrorMessage.PIZZA_ALREADY_EXISTS));
+                    }
+                    Pizza pizza = pizzaFactory.create(createPizzaRequest);
+                    return pizzaRepository.save(pizza)
+                            .map(pizzaMapper::toDto);
+                });
     }
 
     @Override
@@ -54,6 +63,16 @@ public class PizzaServiceImpl implements PizzaService {
                 })
                 .flatMap(pizzaRepository::save)
                 .map(pizzaMapper::toDto);
+    }
+
+    @Override
+    public Mono<String> deletePizza(PizzaType type, String name) {
+        return pizzaRepository.findByKeyTypeAndKeyName(type, name)
+                .switchIfEmpty(Mono.error(new ItemNotFoundException(ErrorMessage.PIZZA_NOT_FOUND)))
+                .flatMap(pizza ->
+                        pizzaRepository.delete(pizza)
+                                .then(Mono.just(SuccessMessage.PIZZA_DELETED_SUCCESSFULLY))
+                );
     }
 
 }

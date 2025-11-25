@@ -12,4 +12,5 @@ public interface PizzaService {
     Flux<PizzaResponse> getAllByType(PizzaType type);
     Mono<PizzaResponse> getByKey(PizzaType type,String name);
     Mono<PizzaResponse> updatePizza(PizzaType type, String name, UpdatePizzaRequest request);
+    Mono<String> deletePizza(PizzaType type, String name);
 }
