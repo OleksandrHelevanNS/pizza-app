@@ -49,6 +49,25 @@ services:
       timeout: 10s
       retries: 15
 
+  auth-db:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_AUTH_DB_HOST}
+    ports:
+      - "${AUTH_DB_HOST_PORT}:${POSTGRES_INTERNAL_PORT}"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${AUTH_DB}
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+    networks:
+      - pizza-shop-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${AUTH_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   menu-service:
     build: ./menu-service
     container_name: menu-service
@@ -69,9 +88,58 @@ services:
     networks:
       - pizza-shop-network
 
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    environment:
+      - SERVER_PORT=${AUTH_SERVICE_PORT}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_AUTH_DB_HOST}:${POSTGRES_INTERNAL_PORT}/${AUTH_DB}
+    depends_on:
+      cassandra:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+    networks:
+      - pizza-shop-network
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    container_name: kafka
+    ports:
+      - "${KAFKA_HOST_PORT_1}:${KAFKA_HOST_PORT_1}"
+      - "${KAFKA_HOST_PORT_2}:${KAFKA_HOST_PORT_2}"
+    environment:
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: "nZbZ5s5aT4W4o1eX4OEVRA"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - pizza-shop-network
+
 networks:
   pizza-shop-network:
     driver: bridge
 
 volumes:
   cassandra_data:
+  kafka-data:
+  auth-data:
