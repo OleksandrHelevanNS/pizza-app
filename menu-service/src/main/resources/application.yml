@@ -16,6 +16,15 @@ spring:
       connect-timeout: 10s
       init-query-timeout: 10s
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+
 logging:
   level:
     root: INFO
