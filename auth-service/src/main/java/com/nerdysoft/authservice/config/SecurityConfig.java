@@ -27,9 +27,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final CustomUserDetailsService userDetailsService;
-
     private final JwtUtils jwtUtils;
 
     @Bean
@@ -61,7 +59,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtils, userDetailsService);
+        return new JwtAuthenticationFilter(jwtUtils);
     }
 
     @Bean
