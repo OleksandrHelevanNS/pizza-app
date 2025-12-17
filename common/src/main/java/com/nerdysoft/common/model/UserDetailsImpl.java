@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 

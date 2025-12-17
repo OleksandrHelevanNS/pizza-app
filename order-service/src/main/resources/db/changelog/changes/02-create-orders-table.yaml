@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 02-create-orders-table
+      author: oleksandr
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: pizza_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: total_price
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: pizza_size
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: amount
+                  type: INT
+                  constraints:
+                    nullable: false

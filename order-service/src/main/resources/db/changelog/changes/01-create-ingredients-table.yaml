@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-ingredients-table
+      author: oleksandr
+      changes:
+        - createTable:
+            tableName: ingredients
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: price
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: portion
+                  type: INT
+                  constraints:
+                    nullable: false
