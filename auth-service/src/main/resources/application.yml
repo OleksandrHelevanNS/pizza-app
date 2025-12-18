@@ -12,3 +12,12 @@ spring:
 security:
   exp: ${EXPIRATION_IN_HOURS}
   secret: ${SECRET_KEY}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
