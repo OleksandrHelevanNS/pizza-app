@@ -36,3 +36,21 @@ databaseChangeLog:
                   type: INT
                   constraints:
                     nullable: false
+
+              - column:
+                  name: need_delivery
+                  type: BOOLEAN
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: phone_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: order_status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false

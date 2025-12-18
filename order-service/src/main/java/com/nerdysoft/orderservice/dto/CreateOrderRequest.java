@@ -1,9 +1,7 @@
 package com.nerdysoft.orderservice.dto;
 
 import com.nerdysoft.orderservice.model.OrderStaus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -12,13 +10,14 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class OrderResponse {
-    private UUID id;
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateOrderRequest {
     private String pizzaName;
     private BigDecimal totalPrice;
     private Integer pizzaSize;
     private Integer amount;
-    private Set<IngredientResponse> ingredients;
+    private Set<UUID> ingredients;
     private Boolean needDelivery;
     private OrderStaus orderStaus;
     private String phoneNumber;
