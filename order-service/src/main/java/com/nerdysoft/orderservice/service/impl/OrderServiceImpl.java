@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,13 @@ public class OrderServiceImpl implements OrderService {
                 .orderStaus(savedOrder.getOrderStaus())
                 .phoneNumber(order.getPhoneNumber())
                 .build();
+    }
+
+    public OrderResponse getOrderById(UUID id) {
+        return orderMapper
+                .toDto(orderRepository
+                        .findById(id)
+                        .orElseThrow(() -> new RuntimeException("Order not found")));
     }
 
 }
