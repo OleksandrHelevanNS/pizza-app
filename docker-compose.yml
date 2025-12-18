@@ -88,7 +88,9 @@ services:
       retries: 5
 
   menu-service:
-    build: ./menu-service
+    build:
+      context: .
+      dockerfile: menu-service/Dockerfile
     container_name: menu-service
     ports:
       - "${MENU_SERVICE_PORT}:${MENU_SERVICE_PORT}"

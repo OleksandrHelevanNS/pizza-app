@@ -1,9 +1,10 @@
 package com.nerdysoft.orderservice.service.impl;
 
 import com.nerdysoft.orderservice.dto.CreateIngredientRequest;
-import com.nerdysoft.orderservice.dto.CreateOrderRequest;
 import com.nerdysoft.orderservice.dto.IngredientResponse;
 import com.nerdysoft.orderservice.dto.UpdateIngredientRequest;
+import com.nerdysoft.orderservice.exception.IngredientAlreadyExistsException;
+import com.nerdysoft.orderservice.exception.IngredientNotFoundException;
 import com.nerdysoft.orderservice.mapper.IngredientMapper;
 import com.nerdysoft.orderservice.model.Ingredient;
 import com.nerdysoft.orderservice.repo.IngredientRepository;
@@ -32,7 +33,7 @@ public class IngredientServiceImpl implements IngredientService {
         for (UUID id : ingredientsId) {
             Ingredient ingredient = ingredientRepository.findById(id)
                     .orElseThrow(() ->
-                            new IllegalArgumentException("Ingredient not found: " + id)
+                            new IngredientNotFoundException("Ingredient not found with id " + id)
                     );
 
             ingredients.add(ingredient);
@@ -44,7 +45,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientResponse createIngredient(CreateIngredientRequest request) {
         if (ingredientRepository.existsByName(request.getName()))
-            throw new IllegalArgumentException("Name already exists: " + request.getName());
+            throw new IngredientAlreadyExistsException("Name already exists: " + request.getName());
 
         return ingredientMapper
                 .toDto(ingredientRepository
@@ -61,11 +62,11 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientResponse updateIngredient(UUID id, UpdateIngredientRequest request) {
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ingredient not found: " + id));
+                .orElseThrow(() -> new IngredientNotFoundException("Ingredient not found: " + id));
 
         if (request.getName() != null && !request.getName().equals(ingredient.getName())) {
             if (ingredientRepository.existsByName(request.getName()))
-                throw new IllegalArgumentException("Name already exists: " + request.getName());
+                throw new IngredientAlreadyExistsException("Name already exists: " + request.getName());
             ingredient.setName(request.getName());
         }
 
@@ -85,7 +86,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public void deleteIngredient(UUID id) {
         if (!ingredientRepository.existsById(id)) {
-            throw new IllegalArgumentException("Ingredient not found: " + id);
+            throw new IngredientNotFoundException("Ingredient not found: " + id);
         }
         ingredientRepository.deleteById(id);
     }

@@ -1,6 +1,8 @@
 package com.nerdysoft.menuservice.exception;
 
-public class ItemNotFoundException extends RuntimeException {
+import com.nerdysoft.common.exception.CafeAppException;
+
+public class ItemNotFoundException extends CafeAppException {
     public ItemNotFoundException(String message) {
         super(message);
     }
