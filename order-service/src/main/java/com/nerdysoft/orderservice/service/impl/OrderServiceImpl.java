@@ -6,6 +6,7 @@ import com.nerdysoft.orderservice.mapper.IngredientMapper;
 import com.nerdysoft.orderservice.mapper.OrderMapper;
 import com.nerdysoft.orderservice.model.Ingredient;
 import com.nerdysoft.orderservice.model.Order;
+import com.nerdysoft.orderservice.model.OrderStaus;
 import com.nerdysoft.orderservice.repo.OrderRepository;
 import com.nerdysoft.orderservice.service.IngredientService;
 import com.nerdysoft.orderservice.service.OrderService;
@@ -30,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
         Set<Ingredient> ingredients =
                 ingredientService.getIngredientsEntities(request.getIngredients());
         order.setIngredients(ingredients);
+        order.setOrderStaus(OrderStaus.PENDING);
         Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.builder()

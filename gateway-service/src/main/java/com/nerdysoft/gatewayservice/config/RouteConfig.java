@@ -14,6 +14,13 @@ public class RouteConfig {
                         predicate.path("/pizzas/**")
                                 .uri("lb://menu-service")
                 )
+                .route("auth-service", predicate ->
+                        predicate.path("/login", "/sign-up")
+                                .uri("lb://auth-service")
+                )
+                .route("order-service", predicate ->
+                        predicate.path("/ingredients/**", "/orders/**")
+                                .uri("lb://order-service"))
                 .build();
     }
 }
