@@ -4,6 +4,7 @@ import com.nerdysoft.orderservice.dto.CreateIngredientRequest;
 import com.nerdysoft.orderservice.dto.IngredientResponse;
 import com.nerdysoft.orderservice.dto.UpdateIngredientRequest;
 import com.nerdysoft.orderservice.service.IngredientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     @PostMapping
-    public ResponseEntity<IngredientResponse> createIngredient(@RequestBody CreateIngredientRequest request) {
+    public ResponseEntity<IngredientResponse> createIngredient(@Valid @RequestBody CreateIngredientRequest request) {
         return new ResponseEntity<>(ingredientService.createIngredient(request), HttpStatus.OK);
     }
 
@@ -33,7 +34,7 @@ public class IngredientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IngredientResponse> updateIngredient(@RequestBody UpdateIngredientRequest request,
+    public ResponseEntity<IngredientResponse> updateIngredient(@Valid @RequestBody UpdateIngredientRequest request,
                                                                @PathVariable UUID id) {
         return new ResponseEntity<>(ingredientService.updateIngredient(id, request), HttpStatus.OK);
     }

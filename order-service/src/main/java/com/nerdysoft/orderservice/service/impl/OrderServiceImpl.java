@@ -5,7 +5,6 @@ import com.nerdysoft.orderservice.dto.OrderResponse;
 import com.nerdysoft.orderservice.dto.UpdateOrderRequest;
 import com.nerdysoft.orderservice.exception.ChangeOrderException;
 import com.nerdysoft.orderservice.exception.OrderNotFoundException;
-import com.nerdysoft.orderservice.mapper.IngredientMapper;
 import com.nerdysoft.orderservice.mapper.OrderMapper;
 import com.nerdysoft.orderservice.model.Ingredient;
 import com.nerdysoft.orderservice.model.Order;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +25,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final IngredientService ingredientService;
-    private final IngredientMapper ingredientMapper;
 
     @Override
     @Transactional
@@ -37,23 +34,8 @@ public class OrderServiceImpl implements OrderService {
                 ingredientService.getIngredientsEntities(request.getIngredients());
         order.setIngredients(ingredients);
         order.setOrderStaus(OrderStatus.PENDING);
-        Order savedOrder = orderRepository.save(order);
 
-        return OrderResponse.builder()
-                .id(savedOrder.getId())
-                .pizzaName(savedOrder.getPizzaName())
-                .totalPrice(savedOrder.getTotalPrice())
-                .pizzaSize(savedOrder.getPizzaSize())
-                .amount(savedOrder.getAmount())
-                .ingredients(savedOrder
-                        .getIngredients()
-                        .stream()
-                        .map(ingredientMapper::toDto)
-                        .collect(Collectors.toSet()))
-                .needDelivery(savedOrder.getNeedDelivery())
-                .orderStaus(savedOrder.getOrderStaus())
-                .phoneNumber(order.getPhoneNumber())
-                .build();
+        return orderMapper.toDto(orderRepository.save(order));
     }
 
     @Override
@@ -102,6 +84,18 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderStaus(order.getOrderStaus().next());
         else
             order.setOrderStaus(status);
+        return orderMapper.toDto(orderRepository.save(order));
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse updateOrderIngredients(UUID id, Set<UUID> ingredients) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException("Order not found: " + id));
+        if (order.getOrderStaus() != OrderStatus.PENDING) {
+            throw new ChangeOrderException("Cannot change ingredients for order with status " + order.getOrderStaus());
+        }
+        Set<Ingredient> ingredientsEntities = ingredientService.getIngredientsEntities(ingredients);
+        order.setIngredients(ingredientsEntities);
         return orderMapper.toDto(orderRepository.save(order));
     }
 
