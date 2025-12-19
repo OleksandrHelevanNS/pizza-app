@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 03-create-order-ingredients-table
+      author: oleksandr
+      changes:
+        - createTable:
+            tableName: order_ingredients
+            columns:
+              - column:
+                  name: order_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: ingredient_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: order_ingredients
+            columnNames: order_id, ingredient_id
+            constraintName: pk_order_ingredients
+
+        - addForeignKeyConstraint:
+            baseTableName: order_ingredients
+            baseColumnNames: order_id
+            referencedTableName: orders
+            referencedColumnNames: id
+            constraintName: fk_order_ingredients_order
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: order_ingredients
+            baseColumnNames: ingredient_id
+            referencedTableName: ingredients
+            referencedColumnNames: id
+            constraintName: fk_order_ingredients_ingredient
+            onDelete: CASCADE

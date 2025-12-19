@@ -1,5 +1,6 @@
 package com.nerdysoft.menuservice.exception;
 
+import com.nerdysoft.common.exception.CafeAppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +16,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ItemAlreadyExistsException.class)
     public ResponseEntity<String> handleException(ItemAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CafeAppException.class)
+    public ResponseEntity<String> handleException(CafeAppException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 }

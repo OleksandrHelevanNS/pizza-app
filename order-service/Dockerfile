@@ -7,16 +7,16 @@ COPY common/src ./common/src
 RUN --mount=type=cache,target=/root/.m2 \
     cd common && mvn clean install -DskipTests
 
-COPY menu-service/pom.xml ./menu-service/
+COPY order-service/pom.xml ./order-service/
 RUN --mount=type=cache,target=/root/.m2 \
-    cd menu-service && mvn dependency:go-offline
+    cd order-service && mvn dependency:go-offline
 
-COPY menu-service/src ./menu-service/src
+COPY order-service/src ./order-service/src
 RUN --mount=type=cache,target=/root/.m2 \
-    cd menu-service && mvn clean package -DskipTests
+    cd order-service && mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=builder /app/menu-service/target/*.jar app.jar
-EXPOSE 8082
+COPY --from=builder /app/order-service/target/*.jar app.jar
+EXPOSE 8083
 ENTRYPOINT ["java", "-jar", "app.jar"]

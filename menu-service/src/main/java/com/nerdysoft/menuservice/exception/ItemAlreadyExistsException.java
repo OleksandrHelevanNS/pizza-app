@@ -1,6 +1,8 @@
 package com.nerdysoft.menuservice.exception;
 
-public class ItemAlreadyExistsException extends RuntimeException {
+import com.nerdysoft.common.exception.CafeAppException;
+
+public class ItemAlreadyExistsException extends CafeAppException {
     public ItemAlreadyExistsException(String message) {
         super(message);
     }
