@@ -8,7 +8,7 @@ import com.nerdysoft.orderservice.exception.OrderNotFoundException;
 import com.nerdysoft.orderservice.mapper.OrderMapper;
 import com.nerdysoft.orderservice.model.Ingredient;
 import com.nerdysoft.orderservice.model.Order;
-import com.nerdysoft.orderservice.service.strategy.OrderStatus;
+import com.nerdysoft.orderservice.strategy.OrderStatus;
 import com.nerdysoft.orderservice.repo.OrderRepository;
 import com.nerdysoft.orderservice.service.IngredientService;
 import com.nerdysoft.orderservice.service.OrderService;

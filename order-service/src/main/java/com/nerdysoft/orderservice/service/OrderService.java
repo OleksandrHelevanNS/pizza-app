@@ -3,7 +3,7 @@ package com.nerdysoft.orderservice.service;
 import com.nerdysoft.orderservice.dto.CreateOrderRequest;
 import com.nerdysoft.orderservice.dto.OrderResponse;
 import com.nerdysoft.orderservice.dto.UpdateOrderRequest;
-import com.nerdysoft.orderservice.service.strategy.OrderStatus;
+import com.nerdysoft.orderservice.strategy.OrderStatus;
 
 import java.util.Set;
 import java.util.UUID;

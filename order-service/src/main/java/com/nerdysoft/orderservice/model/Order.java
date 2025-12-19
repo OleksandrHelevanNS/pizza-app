@@ -1,6 +1,6 @@
 package com.nerdysoft.orderservice.model;
 
-import com.nerdysoft.orderservice.service.strategy.OrderStatus;
+import com.nerdysoft.orderservice.strategy.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;

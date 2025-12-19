@@ -4,7 +4,7 @@ import com.nerdysoft.orderservice.dto.CreateOrderRequest;
 import com.nerdysoft.orderservice.dto.OrderResponse;
 import com.nerdysoft.orderservice.dto.UpdateOrderRequest;
 import com.nerdysoft.orderservice.service.OrderService;
-import com.nerdysoft.orderservice.service.strategy.OrderStatus;
+import com.nerdysoft.orderservice.strategy.OrderStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;

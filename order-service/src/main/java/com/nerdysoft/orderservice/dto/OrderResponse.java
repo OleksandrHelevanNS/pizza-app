@@ -1,6 +1,6 @@
 package com.nerdysoft.orderservice.dto;
 
-import com.nerdysoft.orderservice.service.strategy.OrderStatus;
+import com.nerdysoft.orderservice.strategy.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

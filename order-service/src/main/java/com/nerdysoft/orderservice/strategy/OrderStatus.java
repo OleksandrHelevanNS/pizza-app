@@ -1,4 +1,4 @@
-package com.nerdysoft.orderservice.service.strategy;
+package com.nerdysoft.orderservice.strategy;
 
 public enum OrderStatus implements OrderStatusStrategy {
     PENDING {
