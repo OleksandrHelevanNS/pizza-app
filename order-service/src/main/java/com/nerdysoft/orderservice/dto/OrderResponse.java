@@ -1,6 +1,6 @@
 package com.nerdysoft.orderservice.dto;
 
-import com.nerdysoft.orderservice.model.OrderStaus;
+import com.nerdysoft.orderservice.service.strategy.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +20,6 @@ public class OrderResponse {
     private Integer amount;
     private Set<IngredientResponse> ingredients;
     private Boolean needDelivery;
-    private OrderStaus orderStaus;
+    private OrderStatus orderStaus;
     private String phoneNumber;
 }

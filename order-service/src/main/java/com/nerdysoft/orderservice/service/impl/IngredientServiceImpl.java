@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,15 +28,12 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Set<Ingredient> getIngredientsEntities(Set<UUID> ingredientsId) {
-
         Set<Ingredient> ingredients = new HashSet<>();
-
         for (UUID id : ingredientsId) {
             Ingredient ingredient = ingredientRepository.findById(id)
                     .orElseThrow(() ->
                             new IngredientNotFoundException("Ingredient not found with id " + id)
                     );
-
             ingredients.add(ingredient);
         }
 
@@ -43,6 +41,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
+    @Transactional
     public IngredientResponse createIngredient(CreateIngredientRequest request) {
         if (ingredientRepository.existsByName(request.getName()))
             throw new IngredientAlreadyExistsException("Name already exists: " + request.getName());
@@ -60,30 +59,24 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
+    @Transactional
     public IngredientResponse updateIngredient(UUID id, UpdateIngredientRequest request) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new IngredientNotFoundException("Ingredient not found: " + id));
 
-        if (request.getName() != null && !request.getName().equals(ingredient.getName())) {
+        if (!request.getName().equals(ingredient.getName())) {
             if (ingredientRepository.existsByName(request.getName()))
                 throw new IngredientAlreadyExistsException("Name already exists: " + request.getName());
             ingredient.setName(request.getName());
         }
+        ingredient.setPrice(request.getPrice());
+        ingredient.setPortion(request.getPortion());
 
-        if (request.getPrice() != null) {
-            ingredient.setPrice(request.getPrice());
-        }
-
-        if (request.getPortion() != null) {
-            ingredient.setPortion(request.getPortion());
-        }
-
-        ingredientRepository.save(ingredient);
-
-        return ingredientMapper.toDto(ingredient);
+        return ingredientMapper.toDto(ingredientRepository.save(ingredient));
     }
 
     @Override
+    @Transactional
     public void deleteIngredient(UUID id) {
         if (!ingredientRepository.existsById(id)) {
             throw new IngredientNotFoundException("Ingredient not found: " + id);
