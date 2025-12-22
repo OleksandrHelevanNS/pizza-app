@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,13 +20,16 @@ import reactor.core.publisher.Mono;
 public class PizzaController {
     private final PizzaService pizzaService;
 
-    @PostMapping
-    public Mono<ResponseEntity<PizzaResponse>> createPizza(@RequestBody CreatePizzaRequest pizza) {
-        return pizzaService.createPizza(pizza)
-                .map(savedPizza -> ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body(savedPizza));
+    @PostMapping(consumes = "multipart/form-data")
+    public Mono<ResponseEntity<PizzaResponse>> createPizzaWithImage(
+            @RequestPart("pizza") Mono<CreatePizzaRequest> pizzaRequestMono,
+            @RequestPart("image") FilePart imageFile
+    ) {
+        return pizzaRequestMono
+                .flatMap(pizzaRequest -> pizzaService.createPizza(pizzaRequest, imageFile))
+                .map(savedPizza -> ResponseEntity.status(HttpStatus.CREATED).body(savedPizza));
     }
+
 
     @GetMapping
     public Flux<PizzaResponse> getPizzas(@RequestParam PizzaType type) {
@@ -57,4 +61,15 @@ public class PizzaController {
         return pizzaService.deletePizza(type, name)
                 .map(s -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(s));
     }
+
+    @PatchMapping("/image")
+    public Mono<ResponseEntity<String>> uploadPizzaImage(
+            @RequestParam PizzaType type,
+            @RequestParam String name,
+            @RequestPart("image") FilePart imageFile
+    ) {
+        return pizzaService.uploadImage(type, name, imageFile)
+                .map(ResponseEntity::ok);
+    }
+
 }
