@@ -10,9 +10,11 @@ import com.nerdysoft.menuservice.mapper.PizzaMapper;
 import com.nerdysoft.menuservice.model.Pizza;
 import com.nerdysoft.menuservice.model.PizzaType;
 import com.nerdysoft.menuservice.repo.PizzaRepository;
+import com.nerdysoft.menuservice.service.ImageStorageService;
 import com.nerdysoft.menuservice.service.PizzaService;
 import com.nerdysoft.menuservice.util.SuccessMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,18 +27,24 @@ public class PizzaServiceImpl implements PizzaService {
     private final PizzaRepository pizzaRepository;
     private final PizzaFactory pizzaFactory;
     private final PizzaMapper pizzaMapper;
+    private final ImageStorageService imageStorageService;
 
     @Override
-    public Mono<PizzaResponse> createPizza(CreatePizzaRequest createPizzaRequest) {
+    public Mono<PizzaResponse> createPizza(CreatePizzaRequest createPizzaRequest, FilePart imageFile) {
         return pizzaRepository
                 .existsByKeyTypeAndKeyName(createPizzaRequest.getType(), createPizzaRequest.getName())
                 .flatMap(exists -> {
                     if (exists) {
                         return Mono.error(new ItemAlreadyExistsException(ErrorMessage.PIZZA_ALREADY_EXISTS));
                     }
-                    Pizza pizza = pizzaFactory.create(createPizzaRequest);
-                    return pizzaRepository.save(pizza)
-                            .map(pizzaMapper::toDto);
+
+                    return imageStorageService.upload(imageFile)
+                            .flatMap(url -> {
+                                createPizzaRequest.setImage(url);
+                                Pizza pizza = pizzaFactory.create(createPizzaRequest);
+                                return pizzaRepository.save(pizza)
+                                        .map(pizzaMapper::toDto);
+                            });
                 });
     }
 
@@ -74,5 +82,20 @@ public class PizzaServiceImpl implements PizzaService {
                                 .then(Mono.just(SuccessMessage.PIZZA_DELETED_SUCCESSFULLY))
                 );
     }
+
+    @Override
+    public Mono<String> uploadImage(PizzaType type, String name, FilePart imageFile) {
+        return pizzaRepository.findByKeyTypeAndKeyName(type, name)
+                .switchIfEmpty(Mono.error(new ItemNotFoundException(ErrorMessage.PIZZA_NOT_FOUND)))
+                .flatMap(pizza ->
+                        imageStorageService.upload(imageFile)
+                                .flatMap(url -> {
+                                    pizza.setImage(url);
+                                    return pizzaRepository.save(pizza)
+                                            .then(Mono.just(url));
+                                })
+                );
+    }
+
 
 }
