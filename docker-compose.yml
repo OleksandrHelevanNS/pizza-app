@@ -105,6 +105,7 @@ services:
       - S3_REGION=${S3_REGION}
       - S3_ACCESS_KEY=${S3_ACCESS_KEY}
       - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - JWK_SET_URI=${JWK_SET_URI}
     depends_on:
       cassandra:
         condition: service_healthy
@@ -126,7 +127,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_AUTH_DB_HOST}:${POSTGRES_INTERNAL_PORT}/${AUTH_DB}
-      - SECRET_KEY=${SECRET_KEY}
       - EXPIRATION_IN_HOURS=${EXPIRATION_IN_HOURS}
     depends_on:
       auth-db:
