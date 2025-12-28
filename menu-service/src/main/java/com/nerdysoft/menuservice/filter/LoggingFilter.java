@@ -1,4 +1,4 @@
-package com.nerdysoft.menuservice.config;
+package com.nerdysoft.menuservice.filter;
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;

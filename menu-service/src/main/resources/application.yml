@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: menu-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://auth-service:8082/.well-known/jwks.json
 
   cassandra:
     keyspace-name: ${CASSANDRA_KEYSPACE}
