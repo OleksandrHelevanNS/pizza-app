@@ -149,6 +149,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_ORDER_DB_HOST}:${POSTGRES_INTERNAL_PORT}/${ORDER_DB}
+      - JWK_SET_URI=${JWK_SET_URI}
     depends_on:
       order-db:
         condition: service_healthy
