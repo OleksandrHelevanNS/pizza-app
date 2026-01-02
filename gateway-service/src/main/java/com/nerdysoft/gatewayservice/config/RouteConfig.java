@@ -15,7 +15,7 @@ public class RouteConfig {
                                 .uri("lb://menu-service")
                 )
                 .route("auth-service", predicate ->
-                        predicate.path("/login", "/sign-up")
+                        predicate.path("/login", "/sign-up","/.well-known/jwks.json", "/users/**")
                                 .uri("lb://auth-service")
                 )
                 .route("order-service", predicate ->

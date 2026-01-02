@@ -9,9 +9,6 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/db.changelog-master.yaml
-security:
-  exp: ${EXPIRATION_IN_HOURS}
-  secret: ${SECRET_KEY}
 
 eureka:
   client:
@@ -21,3 +18,6 @@ eureka:
     register-with-eureka: true
   instance:
     prefer-ip-address: true
+
+security:
+  expiration_in_hours: ${EXPIRATION_IN_HOURS}

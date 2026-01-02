@@ -1,6 +1,7 @@
 package com.nerdysoft.authservice.service.impl;
 
 import com.nerdysoft.authservice.dto.AuthUserRequest;
+import com.nerdysoft.authservice.dto.AuthUserResponse;
 import com.nerdysoft.authservice.dto.CreateUserRequest;
 import com.nerdysoft.authservice.dto.UserResponse;
 import com.nerdysoft.authservice.model.User;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(AuthUserRequest request) {
+    public AuthUserResponse login(AuthUserRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new UsernameNotFoundException(request.email()));
 
@@ -64,7 +65,8 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid credentials");
         }
 
-        return jwtUtils.generateToken(user.getEmail(), user.getRole().name());
+        String token =  jwtUtils.generateToken(user.getEmail(), user.getRole().name());
+        return new AuthUserResponse(user.getRole(), token, jwtUtils.calculateExpirationDate());
     }
 
 }

@@ -28,7 +28,7 @@ public class IngredientController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<IngredientResponse>> getAllIngredients(@PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<IngredientResponse>> getIngredients(@PageableDefault Pageable pageable) {
         return new ResponseEntity<>(ingredientService.getIngredients(pageable), HttpStatus.OK);
 
     }
