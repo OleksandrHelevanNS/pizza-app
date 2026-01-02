@@ -1,6 +1,7 @@
 package com.nerdysoft.authservice.controller;
 
 import com.nerdysoft.authservice.dto.AuthUserRequest;
+import com.nerdysoft.authservice.dto.AuthUserResponse;
 import com.nerdysoft.authservice.dto.CreateUserRequest;
 import com.nerdysoft.authservice.dto.UserResponse;
 import com.nerdysoft.authservice.service.UserService;
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthUserRequest request) {
+    public ResponseEntity<AuthUserResponse> login(@RequestBody AuthUserRequest request) {
         return new ResponseEntity<>(userService.login(request), HttpStatus.OK);
     }
 
